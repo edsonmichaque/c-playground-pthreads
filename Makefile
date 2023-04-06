@@ -7,5 +7,14 @@
 
 
 # end
-build:
-	gcc -o main main.c -Wall -lpthread
+
+.PHONY: target build clean
+
+target:
+	mkdir build
+
+build: target
+	gcc -o build/main main.c -Wall -lpthread
+
+clean:
+	rm -rf build
