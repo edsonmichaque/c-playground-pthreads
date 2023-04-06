@@ -40,11 +40,11 @@ int main(int argc, char *argv[]) {
     perror("pthread_create");
   }
 
-  if (!pthread_join(t1, NULL)) {
+  if (pthread_join(t1, NULL)) {
     perror("pthread_join");
   }
 
-  if (!pthread_join(t2, NULL)) {
+  if (pthread_join(t2, NULL)) {
     perror("pthread_join");
   }
 
