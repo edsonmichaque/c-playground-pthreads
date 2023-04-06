@@ -1,29 +1,13 @@
+#include "thread.h"
+
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-typedef struct info {
-  int id;
-  int sleep;
-} pthread_info_t;
-
-void usage() {
-  fprintf(stderr, "main <threads>");
-  exit(EXIT_FAILURE);
-}
-
-void *worker(void *args) {
-  pthread_info_t *thread_info = (pthread_info_t *)args;
-
-  for (int i = 0; i < 100; i++) {
-    printf("thread=%lu sleep=%d\n", (unsigned long int)pthread_self(), i);
-    sleep(thread_info->sleep);
-  }
-
-  return NULL;
-}
+void usage(void);
+void *worker(void *);
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -33,10 +17,10 @@ int main(int argc, char *argv[]) {
   int n_theard = atoi(argv[1]);
 
   pthread_t threads[n_theard];
-  pthread_info_t threads_info[n_theard];
+  thread_info_t threads_info[n_theard];
 
   for (int i = 0; i < n_theard; i++) {
-    threads_info[i] = (pthread_info_t){
+    threads_info[i] = (thread_info_t){
         .id = i,
         .sleep = i,
     };
@@ -55,4 +39,20 @@ int main(int argc, char *argv[]) {
   }
 
   return EXIT_SUCCESS;
+}
+
+void usage(void) {
+  fprintf(stderr, "main <threads>");
+  exit(EXIT_FAILURE);
+}
+
+void *worker(void *args) {
+  thread_info_t *thread_info = (thread_info_t *)args;
+
+  for (int i = 0; i < 100; i++) {
+    printf("thread=%lu sleep=%d\n", (unsigned long int)pthread_self(), i);
+    sleep(thread_info->sleep);
+  }
+
+  return NULL;
 }
