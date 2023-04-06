@@ -1,18 +1,24 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 typedef struct info {
-  char *name;
+  int id;
   int sleep;
-} thread_info_t;
+} pthread_info_t;
+
+void usage() {
+  fprintf(stderr, "main <threads>");
+  exit(EXIT_FAILURE);
+}
 
 void *worker(void *args) {
-  thread_info_t *thread_info = (thread_info_t *)args;
+  pthread_info_t *thread_info = (pthread_info_t *)args;
 
   for (int i = 0; i < 100; i++) {
-    printf("thread=%s i=%d\n", thread_info->name, i);
+    printf("thread=%lu sleep=%d\n", (unsigned long int)pthread_self(), i);
     sleep(thread_info->sleep);
   }
 
@@ -20,32 +26,32 @@ void *worker(void *args) {
 }
 
 int main(int argc, char *argv[]) {
-  pthread_t t1, t2;
-
-  thread_info_t thread_1_info = {
-      .name = "t1",
-      .sleep = 1,
-  };
-
-  thread_info_t thread_2_info = {
-      .name = "t2",
-      .sleep = 4,
-  };
-
-  if (pthread_create(&t1, NULL, &worker, &thread_1_info)) {
-    perror("pthread_create");
+  if (argc != 2) {
+    usage();
   }
 
-  if (pthread_create(&t2, NULL, &worker, &thread_2_info)) {
-    perror("pthread_create");
+  int n_theard = atoi(argv[1]);
+
+  pthread_t threads[n_theard];
+  pthread_info_t threads_info[n_theard];
+
+  for (int i = 0; i < n_theard; i++) {
+    threads_info[i] = (pthread_info_t){
+        .id = i,
+        .sleep = i,
+    };
   }
 
-  if (pthread_join(t1, NULL)) {
-    perror("pthread_join");
+  for (int i = 0; i < n_theard; i++) {
+    if (pthread_create(&threads[i], NULL, &worker, &threads_info[i])) {
+      perror("pthread_create");
+    }
   }
 
-  if (pthread_join(t2, NULL)) {
-    perror("pthread_join");
+  for (int i = 0; i < n_theard; i++) {
+    if (pthread_join(threads[i], NULL)) {
+      perror("pthread_join");
+    }
   }
 
   return EXIT_SUCCESS;
