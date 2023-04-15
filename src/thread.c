@@ -5,6 +5,7 @@
 thread_error_t *
 thread_error_new(int code, char *msg)
 {
+	/* Initialize an instance of thread_error_t */
 	thread_error_t *err = (thread_error_t *)calloc(1,
 	    sizeof(thread_error_t));
 	err->code = code;
@@ -13,12 +14,16 @@ thread_error_new(int code, char *msg)
 	return err;
 }
 
+/*  Free the object of type thread_error_t */
 void
-thread_error_delete(thread_error_t *err)
+thread_error_free(thread_error_t *err)
 {
-	free(err);
+	if (NULL == err) {
+		free(err);
+	}
 }
 
+/* Create a new thread by passing a function handler */
 thread_error_t *
 thread_new(thread_t **self, void *(*handler)(void *))
 {
@@ -75,7 +80,7 @@ thread_wait(thread_t *self)
 }
 
 thread_error_t *
-thread_delete(thread_t *self)
+thread_free(thread_t *self)
 {
 	if (NULL == self) {
 		return thread_error_new(THREAD_ERR_FAILURE,

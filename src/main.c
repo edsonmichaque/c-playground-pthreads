@@ -25,7 +25,7 @@ main(int argc, char *argv[])
 
 		if (err) {
 			perror("thread_new_error");
-			thread_error_delete(err);
+			thread_error_free(err);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -35,17 +35,17 @@ main(int argc, char *argv[])
 
 		if (err) {
 			perror("thread_join");
-			thread_error_delete(err);
+			thread_error_free(err);
 			exit(EXIT_FAILURE);
 		}
 	}
 
 	for (int i = 0; i < N_THREADS; i++) {
-		thread_error_t *err = thread_delete(threads[i]);
+		thread_error_t *err = thread_free(threads[i]);
 
 		if (err) {
 			perror("thread_delete");
-			thread_error_delete(err);
+			thread_error_free(err);
 			exit(EXIT_FAILURE);
 		}
 	}

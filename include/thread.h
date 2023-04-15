@@ -17,8 +17,8 @@ typedef struct {
 
 thread_error_t *thread_new(thread_t **, void *(*)(void *));
 thread_error_t *thread_wait(thread_t *);
-thread_error_t *thread_delete(thread_t *);
+thread_error_t *thread_free(thread_t *);
 thread_error_t *thread_error_new(int code, char *msg);
-void thread_error_delete(thread_error_t *err);
+void thread_error_free(thread_error_t *err);
 
 #endif // THREAD_H_
